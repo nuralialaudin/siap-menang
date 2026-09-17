@@ -134,7 +134,7 @@ export default function AuthenticatedLayout({ user, header, children, currentVie
                             </div>
 
                             {/* Hamburger Mobile */}
-                            <div className="flex sm:hidden">
+                            <div className="flex md:hidden">
                                 <button onClick={() => setShowingNavigationDropdown(!showingNavigationDropdown)} className="p-2 text-slate-600">
                                     <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                                 </button>
@@ -142,19 +142,34 @@ export default function AuthenticatedLayout({ user, header, children, currentVie
                         </div>
                     </div>
 
-                    {/* Mobile Dropdown */}
+                    {/* Mobile Dropdown (Lengkap dengan Navigasi Menu Utama) */}
                     {showingNavigationDropdown && (
-                        <div className="sm:hidden px-4 pt-2 pb-4 border-t border-slate-200 bg-white space-y-2">
-                            <div className="text-xs font-bold text-slate-400 uppercase">Akun: {user.name} ({userRole})</div>
-                            <button onClick={handleRefreshData} className="w-full text-left py-2 text-blue-600 font-semibold">🔄 Segarkan Data</button>
-                            <Link href={route('profile.edit')} className="block py-2 text-slate-700 font-semibold">⚙️ Pengaturan Profil</Link>
-                            <Link href={route('logout')} method="post" as="button" className="w-full text-left py-2 text-rose-600 font-semibold">🚪 Keluar Sistem</Link>
+                        <div className="md:hidden px-4 pt-3 pb-5 border-t border-slate-200 bg-white space-y-3">
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">Akun: {user.name} ({userRole})</div>
+                            
+                            <div className="grid grid-cols-1 gap-1 pt-1 border-t border-slate-100">
+                                <Link href={route('dashboard')} className="py-2 text-slate-700 font-semibold block">📊 Dashboard Utama</Link>
+                                {(isAdmin || userRole === 'tim_utama') && (
+                                    <Link href={route('zones.index')} className="py-2 text-slate-700 font-semibold block">🗺️ Master Zona</Link>
+                                )}
+                                {(isAdmin || userRole === 'tim_utama') && (
+                                    <Link href={route('users.index')} className="py-2 text-slate-700 font-semibold block">👥 Manajemen User</Link>
+                                )}
+                                <Link href={route('voters.index')} className="py-2 text-slate-700 font-semibold block">🗳️ Data Pemilih</Link>
+                                <Link href={route('field-reports.index')} className="py-2 text-slate-700 font-semibold block">📋 Laporan Lapangan</Link>
+                            </div>
+
+                            <div className="pt-2 border-t border-slate-100 space-y-1">
+                                <button onClick={handleRefreshData} className="w-full text-left py-2 text-blue-600 font-semibold">🔄 Segarkan Data</button>
+                                <Link href={route('profile.edit')} className="block py-2 text-slate-700 font-semibold">⚙️ Pengaturan Profil</Link>
+                                <Link href={route('logout')} method="post" as="button" className="w-full text-left py-2 text-rose-600 font-semibold block">🚪 Keluar Sistem</Link>
+                            </div>
                         </div>
                     )}
                 </nav>
 
-                {/* Sub Menu / Navigasi Modul Utama (Dinamis Berdasarkan Route) */}
-                <div className="bg-white border-b border-slate-200 shadow-2xs">
+                {/* Sub Menu / Navigasi Modul Utama (Desktop) */}
+                <div className="hidden md:block bg-white border-b border-slate-200 shadow-2xs">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 overflow-x-auto">
                         <Link 
                             href={route('dashboard')} 
@@ -177,6 +192,19 @@ export default function AuthenticatedLayout({ user, header, children, currentVie
                                 }`}
                             >
                                 Master Zona
+                            </Link>
+                        )}
+
+                        {(isAdmin || userRole === 'tim_utama') && (
+                            <Link 
+                                href={route('users.index')} 
+                                className={`py-3 border-b-2 text-sm font-semibold transition ${
+                                    route().current('users.*') 
+                                        ? 'border-blue-600 text-blue-700' 
+                                        : 'border-transparent text-slate-600 hover:text-slate-900'
+                                }`}
+                            >
+                                Manajemen User
                             </Link>
                         )}
 
